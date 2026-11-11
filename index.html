@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,7 +47,7 @@ html, body {
     inset: 0;
     overflow: hidden;
     background:
-        radial-gradient(ellipse at 75% 48%, rgba(0,100,50,.18), transparent 43%),
+        radial-gradient(ellipse at 50% 48%, rgba(0,100,50,.18), transparent 50%),
         #020b07;
 }
 
@@ -66,7 +65,7 @@ html, body {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(circle at 78% 45%, rgba(0,255,100,.11), transparent 32%),
+        radial-gradient(circle at 50% 45%, rgba(0,255,100,.11), transparent 38%),
         radial-gradient(circle at 15% 80%, rgba(0,180,80,.08), transparent 30%),
         linear-gradient(180deg, rgba(0,0,0,.15), transparent 50%, rgba(0,0,0,.5));
     pointer-events: none;
@@ -210,107 +209,16 @@ html, body {
 }
 
 /* =================================
-   LEFT INSTRUCTION PANEL
-================================= */
-
-.instruction-panel {
-    position: absolute;
-    left: 7%;
-    top: 36%;
-    width: 40%;
-    height: 28%;
-    min-height: 170px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid rgba(150,255,180,.65);
-    clip-path: polygon(
-        0 8%, 12% 0, 88% 0, 100% 8%,
-        100% 92%, 88% 100%, 12% 100%, 0 92%
-    );
-    background: rgba(0,30,15,.22);
-    box-shadow: 0 0 25px rgba(0,255,120,.12);
-    z-index: 4;
-    cursor: pointer;
-    transition: background .3s, box-shadow .3s;
-}
-
-.instruction-panel:hover {
-    background: rgba(0,255,100,.09);
-    box-shadow: 0 0 35px rgba(0,255,120,.25);
-}
-
-.instruction-panel::before {
-    content: "";
-    position: absolute;
-    inset: 9px;
-    border: 1px solid rgba(100,255,160,.45);
-    pointer-events: none;
-}
-
-.instruction-inner {
-    position: relative;
-    text-align: center;
-    z-index: 2;
-    padding: 15px;
-}
-
-.instruction-small {
-    color: #78ffa1;
-    font-family: 'Orbitron', sans-serif;
-    font-size: clamp(7px, .8vw, 11px);
-    letter-spacing: 3px;
-    margin-bottom: 18px;
-}
-
-.instruction-main {
-    color: #e3ffeb;
-    font-family: 'Orbitron', sans-serif;
-    font-size: clamp(18px, 3vw, 40px);
-    font-weight: 800;
-    line-height: 1.35;
-    text-shadow: 0 0 16px rgba(0,255,120,.45);
-}
-
-.instruction-line {
-    height: 1px;
-    width: 55%;
-    margin: 16px auto;
-    background: #00ff80;
-    box-shadow: 0 0 12px #00ff80;
-}
-
-.instruction-sub {
-    color: #9bffb5;
-    font-size: clamp(7px, .8vw, 10px);
-    letter-spacing: 2px;
-}
-
-.instruction-side {
-    position: absolute;
-    top: 12%;
-    bottom: 12%;
-    width: 3px;
-    background: repeating-linear-gradient(
-        to bottom,
-        #8affae 0 13px,
-        transparent 13px 19px
-    );
-}
-
-.instruction-side.left { left: 0; }
-.instruction-side.right { right: 0; }
-
-/* =================================
-   RIGHT SCANNER
+   CENTERED LARGE SCANNER
 ================================= */
 
 .scanner-area {
     position: absolute;
-    top: 23%;
-    right: 9%;
-    width: 27%;
-    height: 55%;
+    top: 17%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(43vw, 540px);
+    height: 62%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -319,22 +227,34 @@ html, body {
 
 .scanner-label {
     font-family: 'Orbitron', sans-serif;
-    font-size: clamp(7px, .8vw, 10px);
+    font-size: clamp(9px, 1vw, 13px);
     letter-spacing: 3px;
     color: #baffcd;
-    margin-bottom: 13px;
+    margin-bottom: 15px;
+    text-align: center;
 }
 
 .scanner-frame {
     position: relative;
     width: 100%;
-    height: 100%;
+    flex: 1;
+    min-height: 0;
     border: 1px solid rgba(120,255,160,.65);
     background: rgba(0,255,100,.025);
     overflow: hidden;
     box-shadow:
         inset 0 0 35px rgba(0,255,100,.08),
-        0 0 12px rgba(0,255,100,.08);
+        0 0 18px rgba(0,255,100,.12);
+    cursor: default;
+    touch-action: none;
+    user-select: none;
+}
+
+.scanner-frame.scanning {
+    border-color: rgba(170,255,0,.95);
+    box-shadow:
+        inset 0 0 45px rgba(0,255,100,.16),
+        0 0 30px rgba(0,255,100,.28);
 }
 
 .scanner-frame::before {
@@ -357,8 +277,8 @@ html, body {
 
 .corner {
     position: absolute;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     z-index: 7;
     border-color: #aaffc2;
     border-style: solid;
@@ -371,7 +291,7 @@ html, body {
 
 .scanner-ticks {
     position: absolute;
-    top: 20%;
+    top: 15%;
     bottom: 15%;
     width: 13px;
     opacity: .5;
@@ -384,73 +304,6 @@ html, body {
 
 .scanner-ticks.left { left: 3px; }
 .scanner-ticks.right { right: 3px; }
-
-/* =================================
-   HOLOGRAPHIC HAND
-================================= */
-
-.hud-hand {
-    position: absolute;
-    width: 76%;
-    height: 95%;
-    bottom: 0;
-    left: 12%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transform: translateY(25px);
-    transition: opacity 2s ease, transform 2s ease;
-    z-index: 3;
-    filter: drop-shadow(0 0 12px #00ff80);
-}
-
-.hud-hand.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.hud-hand.scanning {
-    animation: hologramGlow 1.6s ease-in-out infinite alternate;
-}
-
-.hud-hand svg {
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-}
-
-.hand-outline {
-    fill: rgba(0,255,110,.12);
-    stroke: #8affae;
-    stroke-width: 2.4;
-    stroke-linejoin: round;
-    stroke-linecap: round;
-}
-
-.hand-details {
-    fill: none;
-    stroke: #c4ffd3;
-    stroke-width: 1.4;
-    stroke-linecap: round;
-    opacity: .9;
-}
-
-.hand-circuit {
-    fill: none;
-    stroke: #00ff80;
-    stroke-width: 1;
-    stroke-dasharray: 3 4;
-    opacity: .75;
-}
-
-@keyframes hologramGlow {
-    to {
-        filter:
-            drop-shadow(0 0 17px #00ff80)
-            drop-shadow(0 0 30px #b5ff00);
-    }
-}
 
 /* =================================
    SCANNING LASER
@@ -469,6 +322,7 @@ html, body {
         0 0 12px #b5ff00,
         0 0 28px #00ff80,
         0 0 55px #00ff80;
+    pointer-events: none;
 }
 
 .scan-laser::after {
@@ -507,6 +361,7 @@ html, body {
     box-shadow: 0 0 18px #aaff00;
     z-index: 7;
     animation: pointPulse 1.3s infinite;
+    pointer-events: none;
 }
 
 @keyframes pointPulse {
@@ -519,9 +374,9 @@ html, body {
 .scanner-status {
     color: #aaffc4;
     font-family: 'Orbitron', sans-serif;
-    font-size: 9px;
+    font-size: 10px;
     letter-spacing: 2px;
-    margin-top: 12px;
+    margin-top: 14px;
     text-align: center;
 }
 
@@ -534,7 +389,7 @@ html, body {
     left: 3.5%;
     right: 3.5%;
     bottom: 5%;
-    height: 115px;
+    height: 105px;
     display: flex;
     align-items: center;
     gap: 24px;
@@ -771,27 +626,22 @@ html, body {
 
 @media (max-width: 700px) {
 
-    .instruction-panel {
-        left: 3%;
-        width: 43%;
-        top: 38%;
-        height: 24%;
-        min-height: 130px;
-    }
-
     .scanner-area {
-        right: 4%;
-        width: 38%;
-        top: 28%;
-        height: 44%;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        width: 65%;
+        top: 19%;
+        height: 54%;
     }
 
-    .instruction-main {
-        font-size: clamp(13px, 3vw, 22px);
+    .scanner-label {
+        font-size: 8px;
+        letter-spacing: 2px;
     }
 
-    .instruction-small,
-    .instruction-sub {
+    .scanner-status {
+        font-size: 8px;
         letter-spacing: 1px;
     }
 
@@ -807,6 +657,10 @@ html, body {
     .hud-wave {
         display: none;
     }
+
+    .date-number {
+        font-size: 27px;
+    }
 }
 
 @media (max-height: 600px) {
@@ -817,15 +671,15 @@ html, body {
     }
 
     .scanner-area {
-        top: 20%;
-        height: 52%;
+        top: 16%;
+        height: 59%;
+        width: min(40vw, 440px);
     }
 
-    .instruction-panel {
-        top: 34%;
+    .hud-top {
+        top: 2%;
     }
 }
-
 </style>
 </head>
 
@@ -849,9 +703,9 @@ html, body {
         <div class="hud-top">
 
             <div class="hud-date">
-                <span class="date-day">MONDAY</span>
-                <span class="date-number">01</span>
-                <span class="date-month">MARCH</span>
+                <span class="date-day" id="dateDay">---</span>
+                <span class="date-number" id="dateNumber">00</span>
+                <span class="date-month" id="dateMonth">---</span>
             </div>
 
             <div class="hud-wave">
@@ -865,35 +719,7 @@ html, body {
 
         </div>
 
-        <!-- LEFT INSTRUCTION PANEL -->
-
-        <div class="instruction-panel" id="startScan">
-
-            <div class="instruction-side left"></div>
-            <div class="instruction-side right"></div>
-
-            <div class="instruction-inner">
-
-                <div class="instruction-small">
-                    BIOMETRIC AUTHENTICATION
-                </div>
-
-                <div class="instruction-main">
-                    PLACE YOUR HAND<br>
-                    ON THE SCANNER
-                </div>
-
-                <div class="instruction-line"></div>
-
-                <div class="instruction-sub" id="instructionText">
-                    TOUCH THE PANEL TO BEGIN
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- RIGHT HAND SCANNER -->
+        <!-- CENTER SCANNER -->
 
         <div class="scanner-area">
 
@@ -913,102 +739,6 @@ html, body {
 
                 <div class="scanner-ticks left"></div>
                 <div class="scanner-ticks right"></div>
-
-                <!-- HOLOGRAPHIC HUMAN HAND -->
-
-                <div class="hud-hand" id="hudHand">
-
-                    <svg viewBox="0 0 240 390"
-                         xmlns="http://www.w3.org/2000/svg">
-
-                        <defs>
-                            <linearGradient id="handGradient"
-                                x1="0" y1="0" x2="1" y2="1">
-                                <stop offset="0%" stop-color="#caffd8" stop-opacity=".4"/>
-                                <stop offset="50%" stop-color="#00ff80" stop-opacity=".15"/>
-                                <stop offset="100%" stop-color="#00b85e" stop-opacity=".35"/>
-                            </linearGradient>
-                        </defs>
-
-                        <path class="hand-outline"
-                            fill="url(#handGradient)"
-                            d="
-                            M75 365
-                            L75 303
-                            C69 293 63 284 55 275
-                            L19 228
-                            C10 216 12 202 22 195
-                            C33 188 44 193 53 204
-                            L79 236
-                            L72 119
-                            C71 100 81 89 94 89
-                            C107 89 114 100 114 118
-                            L116 199
-                            L115 53
-                            C115 32 126 20 139 20
-                            C153 20 162 32 162 53
-                            L160 199
-                            L166 75
-                            C167 56 178 46 190 49
-                            C203 51 209 63 207 81
-                            L199 211
-                            L214 124
-                            C217 107 228 99 240 104
-                            C252 109 254 122 249 138
-                            L230 245
-                            C225 272 215 291 198 307
-                            L194 365 Z"
-                            transform="translate(-12 0) scale(1.04 1)"/>
-
-                        <g class="hand-details">
-
-                            <path d="M82 124 Q97 130 112 124"/>
-                            <path d="M83 160 Q98 166 113 160"/>
-
-                            <path d="M124 78 Q139 84 155 78"/>
-                            <path d="M124 116 Q139 122 155 116"/>
-                            <path d="M124 153 Q139 159 155 153"/>
-
-                            <path d="M170 100 Q184 106 201 101"/>
-                            <path d="M168 137 Q183 143 198 138"/>
-                            <path d="M166 173 Q182 179 195 174"/>
-
-                            <path d="M212 151 Q226 157 239 151"/>
-                            <path d="M206 188 Q220 194 234 188"/>
-
-                            <path d="M61 236 C93 211 128 211 158 228 C176 238 191 236 209 222"/>
-                            <path d="M68 256 C105 239 142 240 170 257 C185 265 198 262 211 253"/>
-                            <path d="M88 211 C99 231 103 249 100 273"/>
-                            <path d="M157 211 C152 235 157 253 168 276"/>
-                            <path d="M81 283 Q130 300 189 281"/>
-
-                            <path d="M76 328 Q135 339 195 328"/>
-                            <path d="M76 345 Q135 356 195 345"/>
-
-                        </g>
-
-                        <g class="hand-circuit">
-                            <path d="M80 180 H190"/>
-                            <path d="M70 192 H200"/>
-                            <path d="M66 205 H205"/>
-                            <path d="M68 220 H207"/>
-                            <path d="M70 237 H207"/>
-                            <path d="M74 254 H202"/>
-                            <path d="M80 270 H195"/>
-                            <path d="M87 289 H188"/>
-                        </g>
-
-                        <g fill="#d5ffe0">
-                            <circle cx="120" cy="215" r="2"/>
-                            <circle cx="155" cy="230" r="2"/>
-                            <circle cx="105" cy="250" r="2"/>
-                            <circle cx="165" cy="265" r="2"/>
-                            <circle cx="130" cy="290" r="2"/>
-                        </g>
-
-                    </svg>
-
-                </div>
 
                 <div class="scan-laser" id="scanLaser"></div>
                 <div class="scan-point"></div>
@@ -1096,7 +826,7 @@ html, body {
 
         </video>
 
-        <!-- Fallback if autoplay is blocked -->
+        <!-- FALLBACK IF AUTOPLAY IS BLOCKED -->
 
         <div id="videoPlayFallback">
 
@@ -1124,11 +854,8 @@ html, body {
    SETTINGS
 ================================= */
 
-const SCAN_DURATION = 10000; 
+const SCAN_DURATION = 10000;
 // Scanner duration: 10 seconds
-
-const HAND_DELAY = 2000;
-// Hand appears first, then scanning begins
 
 
 /* =================================
@@ -1144,17 +871,11 @@ const videoScreen =
 const launchVideo =
     document.getElementById("launchVideo");
 
-const hand =
-    document.getElementById("hudHand");
-
 const laser =
     document.getElementById("scanLaser");
 
 const statusText =
     document.getElementById("scannerStatus");
-
-const instructionText =
-    document.getElementById("instructionText");
 
 const progressFill =
     document.getElementById("progressFill");
@@ -1170,6 +891,41 @@ const meterTwo =
 
 const flash =
     document.getElementById("flash");
+
+
+/* =================================
+   LIVE DATE
+================================= */
+
+function updateLiveDate() {
+
+    const now = new Date();
+
+    const day = now.toLocaleDateString("en-GB", {
+        weekday: "long"
+    });
+
+    const date = now.toLocaleDateString("en-GB", {
+        day: "2-digit"
+    });
+
+    const month = now.toLocaleDateString("en-GB", {
+        month: "long"
+    });
+
+    document.getElementById("dateDay").textContent =
+        day.toUpperCase();
+
+    document.getElementById("dateNumber").textContent =
+        date;
+
+    document.getElementById("dateMonth").textContent =
+        month.toUpperCase();
+}
+
+updateLiveDate();
+
+setInterval(updateLiveDate, 60000);
 
 
 /* =================================
@@ -1269,31 +1025,17 @@ function startHandScan() {
 
     scanStarted = true;
 
-    instructionText.textContent = "HAND DETECTED";
+    const scannerFrame = document.getElementById("scannerFrame");
+    scannerFrame.classList.add("scanning");
 
-    statusText.textContent = "HAND DETECTED";
+    statusText.textContent = "TOUCH DETECTED";
 
-    // Hand gradually appears
-
-    hand.classList.add("visible");
-
-    // Begin scanning after hand appears
-
+    // Scanning starts immediately when the screen is touched.
     setTimeout(() => {
-
-        statusText.textContent =
-            "BIOMETRIC SCANNING";
-
-        instructionText.textContent =
-            "SCANNING IN PROGRESS";
-
-        hand.classList.add("scanning");
-
+        statusText.textContent = "BIOMETRIC SCANNING";
         laser.classList.add("active");
-
         runProgress();
-
-    }, HAND_DELAY);
+    }, 350);
 }
 
 
@@ -1349,13 +1091,8 @@ function completeHandScan() {
 
     laser.classList.remove("active");
 
-    hand.classList.remove("scanning");
-
     statusText.textContent =
         "AUTHENTICATION COMPLETE";
-
-    instructionText.textContent =
-        "SCAN COMPLETED";
 
     percentage.textContent = "100%";
 
@@ -1469,7 +1206,7 @@ launchVideo.addEventListener("error", function() {
     fallback.innerHTML = `
         <div>VIDEO FILE NOT FOUND</div>
         <div style="font-size:11px;letter-spacing:2px">
-            CHECK gimik-launch.mp4
+            CHECK video/gimikk.mp4
         </div>
     `;
 
@@ -1477,35 +1214,32 @@ launchVideo.addEventListener("error", function() {
 
 
 /* =================================
-   CLICK TO START SCANNER
+   TOUCH DETECTION
 ================================= */
 
-document.getElementById("startScan")
-    .addEventListener("click", startHandScan);
+const presentation = document.getElementById("presentation");
+const scannerFrame = document.getElementById("scannerFrame");
 
-document.getElementById("scannerFrame")
-    .addEventListener("click", startHandScan);
+scannerFrame.addEventListener("pointerdown", function(event) {
 
+    if (scanStarted) return;
 
-/* =================================
-   KEYBOARD CONTROL
-================================= */
+    // Prevent the browser from treating the touch as a scroll/zoom gesture.
+    if (event.cancelable) event.preventDefault();
 
-document.addEventListener("keydown", function(event) {
-
-    if (
-        (event.code === "Space" || event.code === "Enter") &&
-        !scanStarted &&
-        scannerScreen.style.display !== "none"
-    ) {
-
-        event.preventDefault();
-
-        startHandScan();
-
+    // Request fullscreen directly during the user's touch gesture.
+    // This is more reliable than requesting it after the scan finishes.
+    if (!document.fullscreenElement && presentation.requestFullscreen) {
+        presentation.requestFullscreen().catch(() => {
+            console.log("Fullscreen request was blocked by the browser.");
+        });
+    } else if (!document.fullscreenElement && presentation.webkitRequestFullscreen) {
+        presentation.webkitRequestFullscreen();
     }
 
-});
+    startHandScan();
+
+}, { passive: false });
 
 </script>
 
