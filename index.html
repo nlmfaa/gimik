@@ -1,9 +1,8 @@
 
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
@@ -14,188 +13,128 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: #000;
+    background: #00150e;
     touch-action: manipulation;
 }
 
+/* FULL SCREEN VIDEO */
 #videoPlayer {
     position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     object-fit: contain;
-    background: #000;
+    background: #00150e;
+    border: none;
+    outline: none;
 }
 
-/* Transparent touch layer */
+/* INVISIBLE TOUCH LAYER */
 #touchLayer {
     position: fixed;
     inset: 0;
-    z-index: 5;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding-bottom: 5vh;
+    z-index: 10;
     background: transparent;
     cursor: pointer;
 }
 
-#startText {
-    color: rgba(190,255,220,.85);
-    font-family: Arial, sans-serif;
-    font-size: clamp(11px, 1.5vw, 16px);
-    letter-spacing: 5px;
-    text-align: center;
-    text-shadow: 0 0 15px #00ff91;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: .45; }
-    50% { opacity: 1; }
-}
-
-#loading {
+/* HIDE FALLBACK MESSAGE */
+#fallback {
+    display: none;
     position: fixed;
     inset: 0;
-    z-index: 10;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    background: #000;
-    color: #8affbf;
-    font-family: Arial, sans-serif;
-    font-size: 13px;
-    letter-spacing: 4px;
-}
-
-#loading.show {
-    display: flex;
+    z-index: 20;
+    background: transparent;
+    cursor: pointer;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ONE VIDEO ELEMENT FOR BOTH VIDEOS -->
 <video
     id="videoPlayer"
-    src="video/scannerr.mp4"
     playsinline
     webkit-playsinline
     preload="auto"
-    controls="false">
+    disablepictureinpicture
+    controlslist="nodownload noplaybackrate noremoteplayback">
+    <source src="video/scannerr.mp4" type="video/mp4">
 </video>
 
-<!-- Touch to start -->
-<div id="touchLayer">
-    <div id="startText">
-        TOUCH TO ACTIVATE
-    </div>
-</div>
-
-<div id="loading">
-    LOADING...
-</div>
+<div id="touchLayer"></div>
+<div id="fallback"></div>
 
 <script>
 const video = document.getElementById("videoPlayer");
 const touchLayer = document.getElementById("touchLayer");
-const startText = document.getElementById("startText");
-const loading = document.getElementById("loading");
+const fallback = document.getElementById("fallback");
 
 let started = false;
 let secondVideo = false;
 
-/* First touch: play scanner video */
-function startExperience() {
+// FIRST TOUCH: PLAY SCANNER VIDEO
+touchLayer.addEventListener("pointerdown", function(e) {
+    e.preventDefault();
 
-    if (started) return;
-
-    started = true;
-
-    touchLayer.style.display = "none";
-
-    video.muted = false;
-    video.currentTime = 0;
-
-    const playPromise = video.play();
-
-    if (playPromise !== undefined) {
-        playPromise.catch(() => {
-            showPlayFallback();
-        });
-    }
-}
-
-/* Scanner video ended: play gimik video */
-video.addEventListener("ended", function() {
-
-    if (secondVideo) return;
-
-    secondVideo = true;
-
-    loading.classList.add("show");
-
-    // Change the video source
-    video.src = "video/gimikk.mp4";
-
-    video.load();
-
-    video.addEventListener("canplay", function playSecondVideo() {
-
-        video.removeEventListener(
-            "canplay",
-            playSecondVideo
-        );
-
-        loading.classList.remove("show");
-
-        video.currentTime = 0;
-
-        video.play().catch(() => {
-            showPlayFallback();
-        });
-
-    }, { once: true });
-
-});
-
-/* Fallback if Safari blocks playback */
-function showPlayFallback() {
-
-    loading.classList.remove("show");
-
-    touchLayer.style.display = "flex";
-
-    startText.textContent = secondVideo
-        ? "TOUCH TO PLAY GIMIK"
-        : "TOUCH TO START SCANNER";
-
-    touchLayer.onclick = function() {
-
+    if (!started) {
+        started = true;
         touchLayer.style.display = "none";
 
         video.play().catch(() => {
-            touchLayer.style.display = "flex";
+            showFallback();
         });
-
-    };
-}
-
-/* Touch support for iPad and other devices */
-touchLayer.addEventListener("pointerdown", function(event) {
-    event.preventDefault();
-    startExperience();
+    } 
+    else if (secondVideo) {
+        video.play().catch(() => {});
+        fallback.style.display = "none";
+    }
 });
 
+// WHEN SCANNER VIDEO ENDS
+video.addEventListener("ended", function() {
+
+    if (!secondVideo) {
+        secondVideo = true;
+
+        video.src = "video/gimikk.mp4";
+        video.load();
+
+        video.addEventListener("canplay", function playSecond() {
+            video.removeEventListener("canplay", playSecond);
+
+            video.play().catch(() => {
+                showFallback();
+            });
+        }, { once: true });
+    }
+});
+
+// SAFARI AUTOPLAY FALLBACK
+function showFallback() {
+    fallback.style.display = "block";
+}
+
+// TAP IF SAFARI BLOCKS SECOND VIDEO
+fallback.addEventListener("pointerdown", function(e) {
+    e.preventDefault();
+
+    video.play().then(() => {
+        fallback.style.display = "none";
+    }).catch(() => {});
+});
+
+// PREVENT LONG PRESS MENU
+document.addEventListener("contextmenu", function(e) {
+    e.preventDefault();
+});
 </script>
 
 </body>
