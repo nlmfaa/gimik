@@ -1,973 +1,199 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ms">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Emerald Palm Scanner</title>
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Majlis Anugerah Kecemerlangan 2026</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap');
-
-:root {
-    --green: #00ff80;
-    --lime: #b5ff00;
-    --light: #caffd8;
-    --dark: #020b07;
-}
-
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: var(--dark);
-    font-family: 'Rajdhani', sans-serif;
-    color: white;
+    background: #000;
     touch-action: manipulation;
 }
 
-#presentation {
+#videoPlayer {
     position: fixed;
     inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: var(--dark);
-}
-
-/* =====================================
-   BACKGROUND
-===================================== */
-
-#scannerScreen {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    background:
-        radial-gradient(ellipse at 50% 50%, rgba(0,120,60,.2), transparent 60%),
-        #020b07;
-}
-
-.grid-background {
-    position: absolute;
-    inset: 0;
-    background-image:
-        linear-gradient(rgba(0,255,120,.10) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,120,.10) 1px, transparent 1px);
-    background-size: 45px 45px;
-    pointer-events: none;
-}
-
-.background-glow {
-    position: absolute;
-    inset: 0;
-    background:
-        radial-gradient(circle at 50% 50%, rgba(0,255,100,.09), transparent 55%),
-        linear-gradient(180deg, rgba(0,0,0,.15), transparent 50%, rgba(0,0,0,.4));
-    pointer-events: none;
-}
-
-/* PARTICLES */
-
-.particle-layer {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    pointer-events: none;
-}
-
-.particle {
-    position: absolute;
-    width: 2px;
-    height: 2px;
-    border-radius: 50%;
-    background: #aaffc4;
-    box-shadow: 0 0 8px #00ff80;
-    opacity: 0;
-    animation: particleFloat 8s linear infinite;
-}
-
-@keyframes particleFloat {
-    0% {
-        transform: translateY(30px);
-        opacity: 0;
-    }
-    20% { opacity: .8; }
-    80% { opacity: .5; }
-    100% {
-        transform: translateY(-100px);
-        opacity: 0;
-    }
-}
-
-/* =====================================
-   TOP HUD
-===================================== */
-
-.hud-top {
-    position: absolute;
-    top: 2.5%;
-    left: 3%;
-    right: 3%;
-    height: 65px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    z-index: 5;
-    pointer-events: none;
-}
-
-.hud-date {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: #baffcd;
-    line-height: 1.1;
-}
-
-.date-day {
-    font-size: 9px;
-    letter-spacing: 3px;
-}
-
-.date-number {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 27px;
-    margin-top: 4px;
-    color: #8affae;
-    text-shadow: 0 0 15px #00ff80;
-}
-
-.date-month {
-    font-size: 9px;
-    letter-spacing: 3px;
-}
-
-.hud-system {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 9px;
-    letter-spacing: 2px;
-    color: #9dffb8;
-    padding-top: 12px;
-}
-
-.status-dot {
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-    margin-right: 8px;
-    border-radius: 50%;
-    background: #00ff80;
-    box-shadow: 0 0 12px #00ff80;
-    animation: blink 1.2s infinite;
-}
-
-@keyframes blink {
-    50% { opacity: .25; }
-}
-
-/* =====================================
-   MAIN SCANNER AREA
-===================================== */
-
-.scanner-area {
-    position: absolute;
-    top: 11%;
-    bottom: 5%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(82vw, 1100px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 4;
-}
-
-.scanner-label {
-    font-family: 'Orbitron', sans-serif;
-    font-size: clamp(10px, 1.1vw, 14px);
-    letter-spacing: 4px;
-    color: #baffcd;
-    margin-bottom: 12px;
-    text-align: center;
-    flex-shrink: 0;
-    pointer-events: none;
-}
-
-/* MAIN FRAME */
-
-.scanner-frame {
-    position: relative;
-    width: 100%;
-    flex: 1;
-    min-height: 0;
-    border: 1px solid rgba(120,255,160,.7);
-    background: rgba(0,255,100,.025);
-    overflow: hidden;
-
-    box-shadow:
-        inset 0 0 50px rgba(0,255,100,.08),
-        0 0 25px rgba(0,255,100,.12);
-
-    touch-action: none;
-    -webkit-user-select: none;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.scanner-frame.scanning {
-    border-color: rgba(170,255,0,.95);
-    box-shadow:
-        inset 0 0 60px rgba(0,255,100,.16),
-        0 0 35px rgba(0,255,100,.3);
-}
-
-.scanner-frame::before {
-    content: "";
-    position: absolute;
-    inset: 12px;
-    border: 1px solid rgba(100,255,150,.14);
-    pointer-events: none;
-}
-
-.scanner-grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-        linear-gradient(rgba(0,255,120,.075) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,120,.075) 1px, transparent 1px);
-    background-size: 30px 30px;
-    opacity: .55;
-    pointer-events: none;
-}
-
-/* FRAME CORNERS */
-
-.corner {
-    position: absolute;
-    width: 38px;
-    height: 38px;
-    z-index: 8;
-    border-color: #aaffc2;
-    border-style: solid;
-    pointer-events: none;
-}
-
-.corner.tl {
-    top: 0;
-    left: 0;
-    border-width: 3px 0 0 3px;
-}
-
-.corner.tr {
-    top: 0;
-    right: 0;
-    border-width: 3px 3px 0 0;
-}
-
-.corner.bl {
-    bottom: 0;
-    left: 0;
-    border-width: 0 0 3px 3px;
-}
-
-.corner.br {
-    bottom: 0;
-    right: 0;
-    border-width: 0 3px 3px 0;
-}
-
-/* SIDE TICKS */
-
-.scanner-ticks {
-    position: absolute;
-    top: 12%;
-    bottom: 12%;
-    width: 14px;
-    opacity: .5;
-    background: repeating-linear-gradient(
-        to bottom,
-        #9affb7 0 1px,
-        transparent 1px 12px
-    );
-    pointer-events: none;
-}
-
-.scanner-ticks.left { left: 5px; }
-.scanner-ticks.right { right: 5px; }
-
-/* =====================================
-   SCAN CENTER DISPLAY
-===================================== */
-
-.scan-center {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    z-index: 5;
-}
-
-.scan-percentage {
-    font-family: 'Orbitron', sans-serif;
-    font-size: clamp(48px, 9vw, 100px);
-    font-weight: 500;
-    color: #d6ffe1;
-    letter-spacing: 2px;
-    text-shadow:
-        0 0 12px rgba(0,255,120,.8),
-        0 0 35px rgba(0,255,120,.5);
-    line-height: 1.15;
-}
-
-.scan-percent-symbol {
-    font-size: .45em;
-    color: #aaffb7;
-    vertical-align: top;
-}
-
-.scan-status {
-    margin-top: 12px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: clamp(9px, 1.2vw, 13px);
-    letter-spacing: 3px;
-    color: #aaffc4;
-    text-align: center;
-}
-
-/* =====================================
-   LASER
-===================================== */
-
-.scan-laser {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    opacity: 0;
-    z-index: 4;
-    background: #e8fff0;
-    box-shadow:
-        0 0 12px #b5ff00,
-        0 0 28px #00ff80,
-        0 0 55px #00ff80;
-    pointer-events: none;
-}
-
-.scan-laser::after {
-    content: "";
-    position: absolute;
-    top: -35px;
-    left: 0;
-    width: 100%;
-    height: 70px;
-    background: linear-gradient(
-        to bottom,
-        transparent,
-        rgba(0,255,100,.16),
-        transparent
-    );
-}
-
-.scan-laser.active {
-    opacity: 1;
-    animation: scanDown 10s linear forwards;
-}
-
-@keyframes scanDown {
-    from { top: 0; }
-    to { top: 100%; }
-}
-
-/* SCAN POINT */
-
-.scan-point {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: white;
-    box-shadow: 0 0 18px #aaff00;
-    z-index: 5;
-    animation: pointPulse 1.3s infinite;
-    pointer-events: none;
-}
-
-@keyframes pointPulse {
-    50% {
-        transform: scale(2);
-        opacity: .35;
-    }
-}
-
-/* =====================================
-   INTERNAL PROGRESS BAR
-===================================== */
-
-.scanner-progress {
-    position: absolute;
-    bottom: 28px;
-    left: 6%;
-    right: 6%;
-    z-index: 9;
-    pointer-events: none;
-}
-
-.progress-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 9px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 9px;
-    letter-spacing: 2px;
-    color: #aaffc4;
-}
-
-.progress-track {
-    width: 100%;
-    height: 4px;
-    background: rgba(0,255,100,.18);
-    overflow: hidden;
-}
-
-.progress-fill {
-    width: 0%;
-    height: 100%;
-    background: #b5ff00;
-    box-shadow:
-        0 0 12px #00ff80,
-        0 0 25px #00ff80;
-    transition: width .1s linear;
-}
-
-/* =====================================
-   VIDEO
-===================================== */
-
-#videoScreen {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    background: #000;
-    z-index: 100;
-}
-
-#videoScreen.active {
-    display: flex;
-}
-
-#launchVideo {
-    display: block;
     width: 100%;
     height: 100%;
     object-fit: contain;
     background: #000;
 }
 
-/* =====================================
-   FLASH
-===================================== */
-
-#flash {
-    position: absolute;
+/* Transparent touch layer */
+#touchLayer {
+    position: fixed;
     inset: 0;
-    background: #caffd8;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 150;
+    z-index: 5;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 5vh;
+    background: transparent;
+    cursor: pointer;
 }
 
-#flash.active {
-    animation: flashEffect .65s ease;
+#startText {
+    color: rgba(190,255,220,.85);
+    font-family: Arial, sans-serif;
+    font-size: clamp(11px, 1.5vw, 16px);
+    letter-spacing: 5px;
+    text-align: center;
+    text-shadow: 0 0 15px #00ff91;
+    animation: pulse 2s infinite;
 }
 
-@keyframes flashEffect {
-    0% { opacity: 0; }
-    30% { opacity: .85; }
-    100% { opacity: 0; }
+@keyframes pulse {
+    0%, 100% { opacity: .45; }
+    50% { opacity: 1; }
 }
 
-/* =====================================
-   RESPONSIVE IPAD / MOBILE
-===================================== */
-
-@media (max-width: 700px) {
-    .scanner-area {
-        width: 92vw;
-        top: 13%;
-        bottom: 4%;
-    }
-
-    .scanner-label {
-        font-size: 9px;
-        letter-spacing: 2px;
-        margin-bottom: 9px;
-    }
-
-    .scan-percentage {
-        font-size: clamp(48px, 13vw, 85px);
-    }
-
-    .scan-status {
-        font-size: 9px;
-        letter-spacing: 2px;
-    }
-
-    .scanner-progress {
-        bottom: 20px;
-    }
-
-    .progress-info {
-        font-size: 8px;
-    }
-
-    .hud-system {
-        font-size: 7px;
-        letter-spacing: 1px;
-    }
+#loading {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    color: #8affbf;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    letter-spacing: 4px;
 }
 
-@media (max-height: 600px) {
-    .scanner-area {
-        top: 12%;
-        bottom: 4%;
-        width: min(78vw, 1000px);
-    }
-
-    .scanner-label {
-        margin-bottom: 7px;
-    }
-
-    .scanner-progress {
-        bottom: 15px;
-    }
-
-    .scan-percentage {
-        font-size: 60px;
-    }
+#loading.show {
+    display: flex;
 }
 </style>
 </head>
 
 <body>
 
-<div id="presentation">
+<!-- ONE VIDEO ELEMENT FOR BOTH VIDEOS -->
+<video
+    id="videoPlayer"
+    src="video/scannerr.mp4"
+    playsinline
+    webkit-playsinline
+    preload="auto"
+    controls="false">
+</video>
 
-    <!-- SCANNER SCREEN -->
-
-    <section id="scannerScreen">
-
-        <div class="grid-background"></div>
-        <div class="background-glow"></div>
-        <div class="particle-layer" id="particles"></div>
-
-        <!-- TOP HUD -->
-
-        <div class="hud-top">
-
-            <div class="hud-date">
-                <span class="date-day" id="dateDay">---</span>
-                <span class="date-number" id="dateNumber">00</span>
-                <span class="date-month" id="dateMonth">---</span>
-            </div>
-
-            <div class="hud-system">
-                <span class="status-dot"></span>
-                BIOMETRIC SECURITY SYSTEM
-            </div>
-
-        </div>
-
-        <!-- MAIN SCANNER -->
-
-        <div class="scanner-area">
-
-            <div class="scanner-label">
-                <span class="status-dot"></span>
-                HAND RECOGNITION SYSTEM
-            </div>
-
-            <div class="scanner-frame" id="scannerFrame">
-
-                <div class="scanner-grid"></div>
-
-                <div class="corner tl"></div>
-                <div class="corner tr"></div>
-                <div class="corner bl"></div>
-                <div class="corner br"></div>
-
-                <div class="scanner-ticks left"></div>
-                <div class="scanner-ticks right"></div>
-
-                <!-- LASER -->
-
-                <div class="scan-laser" id="scanLaser"></div>
-
-                <div class="scan-point"></div>
-
-                <!-- PERCENTAGE INSIDE SCANNER -->
-
-                <div class="scan-center">
-
-                    <div class="scan-percentage">
-                        <span id="percentage">0</span><span class="scan-percent-symbol">%</span>
-                    </div>
-
-                    <div class="scan-status" id="scannerStatus">
-                        AWAITING HAND PLACEMENT
-                    </div>
-
-                </div>
-
-                <!-- PROGRESS BAR INSIDE SCANNER -->
-
-                <div class="scanner-progress">
-
-                    <div class="progress-info">
-                        <span>SCANNING PROGRESS</span>
-                        <span id="progressLabel">0 / 100</span>
-                    </div>
-
-                    <div class="progress-track">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- VIDEO SCREEN -->
-
-    <div id="videoScreen">
-
-        <video id="launchVideo"
-               controls
-               playsinline
-               webkit-playsinline
-               preload="auto">
-
-            <source src="video/gimikk.mp4" type="video/mp4">
-
-            Your browser does not support HTML5 video.
-
-        </video>
-
+<!-- Touch to start -->
+<div id="touchLayer">
+    <div id="startText">
+        TOUCH TO ACTIVATE
     </div>
-
-    <div id="flash"></div>
-
 </div>
 
+<div id="loading">
+    LOADING...
+</div>
 
 <script>
+const video = document.getElementById("videoPlayer");
+const touchLayer = document.getElementById("touchLayer");
+const startText = document.getElementById("startText");
+const loading = document.getElementById("loading");
 
-/* =====================================
-   SETTINGS
-===================================== */
+let started = false;
+let secondVideo = false;
 
-const SCAN_DURATION = 10000;
+/* First touch: play scanner video */
+function startExperience() {
 
+    if (started) return;
 
-/* =====================================
-   ELEMENTS
-===================================== */
+    started = true;
 
-const presentation = document.getElementById("presentation");
-const scannerScreen = document.getElementById("scannerScreen");
-const scannerFrame = document.getElementById("scannerFrame");
+    touchLayer.style.display = "none";
 
-const videoScreen = document.getElementById("videoScreen");
-const launchVideo = document.getElementById("launchVideo");
+    video.muted = false;
+    video.currentTime = 0;
 
-const laser = document.getElementById("scanLaser");
-const statusText = document.getElementById("scannerStatus");
+    const playPromise = video.play();
 
-const progressFill = document.getElementById("progressFill");
-const percentage = document.getElementById("percentage");
-const progressLabel = document.getElementById("progressLabel");
+    if (playPromise !== undefined) {
+        playPromise.catch(() => {
+            showPlayFallback();
+        });
+    }
+}
 
-const flash = document.getElementById("flash");
+/* Scanner video ended: play gimik video */
+video.addEventListener("ended", function() {
 
+    if (secondVideo) return;
 
-/* =====================================
-   LIVE DATE
-===================================== */
+    secondVideo = true;
 
-function updateLiveDate() {
+    loading.classList.add("show");
 
-    const now = new Date();
+    // Change the video source
+    video.src = "video/gimikk.mp4";
 
-    document.getElementById("dateDay").textContent =
-        now.toLocaleDateString("en-GB", {
-            weekday: "long"
-        }).toUpperCase();
+    video.load();
 
-    document.getElementById("dateNumber").textContent =
-        now.toLocaleDateString("en-GB", {
-            day: "2-digit"
+    video.addEventListener("canplay", function playSecondVideo() {
+
+        video.removeEventListener(
+            "canplay",
+            playSecondVideo
+        );
+
+        loading.classList.remove("show");
+
+        video.currentTime = 0;
+
+        video.play().catch(() => {
+            showPlayFallback();
         });
 
-    document.getElementById("dateMonth").textContent =
-        now.toLocaleDateString("en-GB", {
-            month: "long"
-        }).toUpperCase();
+    }, { once: true });
+
+});
+
+/* Fallback if Safari blocks playback */
+function showPlayFallback() {
+
+    loading.classList.remove("show");
+
+    touchLayer.style.display = "flex";
+
+    startText.textContent = secondVideo
+        ? "TOUCH TO PLAY GIMIK"
+        : "TOUCH TO START SCANNER";
+
+    touchLayer.onclick = function() {
+
+        touchLayer.style.display = "none";
+
+        video.play().catch(() => {
+            touchLayer.style.display = "flex";
+        });
+
+    };
 }
 
-updateLiveDate();
-setInterval(updateLiveDate, 60000);
-
-
-/* =====================================
-   PARTICLES
-===================================== */
-
-function createParticles() {
-
-    const container = document.getElementById("particles");
-
-    for (let i = 0; i < 65; i++) {
-
-        const particle = document.createElement("div");
-
-        particle.className = "particle";
-
-        particle.style.left = Math.random() * 100 + "%";
-        particle.style.top = Math.random() * 100 + "%";
-
-        particle.style.animationDuration =
-            (5 + Math.random() * 9) + "s";
-
-        particle.style.animationDelay =
-            Math.random() * 8 + "s";
-
-        container.appendChild(particle);
-    }
-}
-
-createParticles();
-
-
-/* =====================================
-   SCAN CONTROL
-===================================== */
-
-let scanStarted = false;
-let scanCompleted = false;
-
-function startHandScan() {
-
-    if (scanStarted || scanCompleted) return;
-
-    scanStarted = true;
-
-    scannerFrame.classList.add("scanning");
-
-    statusText.textContent = "TOUCH DETECTED";
-
-    setTimeout(() => {
-
-        statusText.textContent = "BIOMETRIC SCANNING";
-
-        laser.classList.add("active");
-
-        runProgress();
-
-    }, 350);
-}
-
-
-/* =====================================
-   TOUCH DETECTION
-   iPAD SAFARI + OTHER BROWSERS
-===================================== */
-
-function handleScannerTouch(event) {
-
-    if (scanStarted || scanCompleted) return;
-
-    if (event.cancelable) {
-        event.preventDefault();
-    }
-
-    startHandScan();
-}
-
-// iPad Safari touch
-scannerFrame.addEventListener(
-    "touchstart",
-    handleScannerTouch,
-    { passive: false }
-);
-
-// Pointer support
-scannerFrame.addEventListener(
-    "pointerdown",
-    handleScannerTouch,
-    { passive: false }
-);
-
-// Mouse / click fallback
-scannerFrame.addEventListener(
-    "click",
-    handleScannerTouch
-);
-
-
-/* =====================================
-   PROGRESS 0% TO 100%
-===================================== */
-
-function runProgress() {
-
-    const startTime = performance.now();
-
-    function updateProgress(currentTime) {
-
-        const elapsed = currentTime - startTime;
-
-        const ratio = Math.min(
-            elapsed / SCAN_DURATION,
-            1
-        );
-
-        const value = Math.floor(ratio * 100);
-
-        percentage.textContent = value;
-
-        progressLabel.textContent =
-            value + " / 100";
-
-        progressFill.style.width =
-            value + "%";
-
-        if (ratio < 1) {
-
-            requestAnimationFrame(updateProgress);
-
-        } else {
-
-            completeHandScan();
-
-        }
-    }
-
-    requestAnimationFrame(updateProgress);
-}
-
-
-/* =====================================
-   FLASH TRANSITION
-===================================== */
-
-function transitionFlash() {
-
-    flash.classList.remove("active");
-
-    void flash.offsetWidth;
-
-    flash.classList.add("active");
-}
-
-
-/* =====================================
-   SCAN COMPLETE
-===================================== */
-
-function completeHandScan() {
-
-    if (scanCompleted) return;
-
-    scanCompleted = true;
-
-    laser.classList.remove("active");
-
-    statusText.textContent = "AUTHENTICATION COMPLETE";
-
-    percentage.textContent = "100";
-    progressLabel.textContent = "100 / 100";
-    progressFill.style.width = "100%";
-
-    setTimeout(() => {
-
-        transitionFlash();
-
-        setTimeout(() => {
-
-            scannerScreen.style.display = "none";
-
-            videoScreen.classList.add("active");
-
-            launchVideo.currentTime = 0;
-
-            playLaunchVideo();
-
-        }, 400);
-
-    }, 1000);
-}
-
-
-/* =====================================
-   PLAY VIDEO WITH ORIGINAL AUDIO
-===================================== */
-
-function playLaunchVideo() {
-
-    launchVideo.muted = false;
-    launchVideo.volume = 1;
-
-    launchVideo.play().then(() => {
-
-        console.log("Video started successfully.");
-
-    }).catch((error) => {
-
-        console.log(
-            "Browser blocked autoplay with sound:",
-            error
-        );
-
-        // Native video controls remain available.
-        // Press Play if the browser blocks autoplay.
-
-    });
-}
-
-
-/* =====================================
-   VIDEO ERROR
-===================================== */
-
-launchVideo.addEventListener("error", function() {
-
-    console.error(
-        "Video file could not be loaded. Check video/gimikk.mp4"
-    );
-
+/* Touch support for iPad and other devices */
+touchLayer.addEventListener("pointerdown", function(event) {
+    event.preventDefault();
+    startExperience();
 });
 
 </script>
