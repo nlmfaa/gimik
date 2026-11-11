@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Majlis Anugerah Kecemerlangan 2026</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #00150e;
+    touch-action: none;
+    overscroll-behavior: none;
+}
+
+#videoPlayer {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #00150e;
+    border: none;
+    outline: none;
+}
+
+/* TOUCH SCREEN */
+#touchLayer {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: transparent;
+    touch-action: none;
+}
+
+/* HIDE PLAYER CONTROLS */
+video::-webkit-media-controls {
+    display: none !important;
+}
+
+video::-webkit-media-controls-panel {
+    display: none !important;
+}
+
+video::-webkit-media-controls-play-button {
+    display: none !important;
+}
+
+video::-webkit-media-controls-start-playback-button {
+    display: none !important;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SINGLE VIDEO -->
+<video
+    id="videoPlayer"
+    playsinline
+    webkit-playsinline
+    preload="auto"
+    disablepictureinpicture
+    controlslist="nodownload noplaybackrate noremoteplayback"
+>
+    <source src="perasmian.mov" type="video/quicktime">
+</video>
+
+<!-- INVISIBLE TOUCH SCREEN -->
+<div id="touchLayer"></div>
+
+<script>
+
+const video = document.getElementById("videoPlayer");
+const touchLayer = document.getElementById("touchLayer");
+
+let started = false;
+
+// START VIDEO AFTER FIRST TOUCH
+function activateVideo(e) {
+
+    if (started) return;
+
+    if (e.cancelable) {
+        e.preventDefault();
+    }
+
+    started = true;
+
+    // REMOVE TOUCH LAYER
+    touchLayer.style.display = "none";
+
+    // PLAY VIDEO FROM BEGINNING
+    video.currentTime = 0;
+
+    video.play().catch(error => {
+        console.log("Video playback error:", error);
+        touchLayer.style.display = "block";
+        started = false;
+    });
+}
+
+// IPAD SAFARI TOUCH
+touchLayer.addEventListener("touchstart", activateVideo, {
+    passive: false
+});
+
+// COMPUTER / MOUSE SUPPORT
+touchLayer.addEventListener("click", activateVideo);
+
+// DISABLE LONG PRESS MENU
+document.addEventListener("contextmenu", function(e) {
+    e.preventDefault();
+});
+
+</script>
+
+</body>
+</html>
