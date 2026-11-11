@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Digital Scanner - SRI Seremban</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Digital Palm Scanner</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap');
 
 :root {
     --green: #00ff80;
@@ -25,29 +25,31 @@ html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: #020b07;
+    background: var(--dark);
     font-family: 'Rajdhani', sans-serif;
     color: white;
+    touch-action: manipulation;
 }
 
 #presentation {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     background: var(--dark);
 }
 
-/* =================================
-   SCANNER SCREEN
-================================= */
+/* =====================================
+   SCANNER BACKGROUND
+===================================== */
 
 #scannerScreen {
     position: absolute;
     inset: 0;
     overflow: hidden;
     background:
-        radial-gradient(ellipse at 50% 48%, rgba(0,100,50,.18), transparent 50%),
+        radial-gradient(ellipse at 50% 48%, rgba(0,100,50,.2), transparent 55%),
         #020b07;
 }
 
@@ -58,7 +60,7 @@ html, body {
         linear-gradient(rgba(0,255,120,.12) 1px, transparent 1px),
         linear-gradient(90deg, rgba(0,255,120,.12) 1px, transparent 1px);
     background-size: 5.5vw 5.5vw;
-    opacity: .48;
+    pointer-events: none;
 }
 
 .background-glow {
@@ -66,8 +68,7 @@ html, body {
     inset: 0;
     background:
         radial-gradient(circle at 50% 45%, rgba(0,255,100,.11), transparent 38%),
-        radial-gradient(circle at 15% 80%, rgba(0,180,80,.08), transparent 30%),
-        linear-gradient(180deg, rgba(0,0,0,.15), transparent 50%, rgba(0,0,0,.5));
+        linear-gradient(180deg, rgba(0,0,0,.1), transparent 50%, rgba(0,0,0,.5));
     pointer-events: none;
 }
 
@@ -104,9 +105,9 @@ html, body {
     }
 }
 
-/* =================================
+/* =====================================
    TOP HUD
-================================= */
+===================================== */
 
 .hud-top {
     position: absolute;
@@ -118,6 +119,7 @@ html, body {
     justify-content: space-between;
     align-items: flex-start;
     z-index: 5;
+    pointer-events: none;
 }
 
 .hud-date {
@@ -208,9 +210,9 @@ html, body {
     50% { opacity: .25; }
 }
 
-/* =================================
-   CENTERED LARGE SCANNER
-================================= */
+/* =====================================
+   SCANNER AREA
+===================================== */
 
 .scanner-area {
     position: absolute;
@@ -232,6 +234,7 @@ html, body {
     color: #baffcd;
     margin-bottom: 15px;
     text-align: center;
+    pointer-events: none;
 }
 
 .scanner-frame {
@@ -242,12 +245,18 @@ html, body {
     border: 1px solid rgba(120,255,160,.65);
     background: rgba(0,255,100,.025);
     overflow: hidden;
+
     box-shadow:
         inset 0 0 35px rgba(0,255,100,.08),
         0 0 18px rgba(0,255,100,.12);
+
     cursor: default;
+
+    /* Important for iPad touch detection */
     touch-action: none;
+    -webkit-user-select: none;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .scanner-frame.scanning {
@@ -273,6 +282,7 @@ html, body {
         linear-gradient(90deg, rgba(0,255,120,.09) 1px, transparent 1px);
     background-size: 20px 20px;
     opacity: .4;
+    pointer-events: none;
 }
 
 .corner {
@@ -282,6 +292,7 @@ html, body {
     z-index: 7;
     border-color: #aaffc2;
     border-style: solid;
+    pointer-events: none;
 }
 
 .corner.tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
@@ -300,14 +311,15 @@ html, body {
         #9affb7 0 1px,
         transparent 1px 9px
     );
+    pointer-events: none;
 }
 
 .scanner-ticks.left { left: 3px; }
 .scanner-ticks.right { right: 3px; }
 
-/* =================================
-   SCANNING LASER
-================================= */
+/* =====================================
+   SCAN LASER
+===================================== */
 
 .scan-laser {
     position: absolute;
@@ -323,21 +335,6 @@ html, body {
         0 0 28px #00ff80,
         0 0 55px #00ff80;
     pointer-events: none;
-}
-
-.scan-laser::after {
-    content: "";
-    position: absolute;
-    top: -24px;
-    left: 0;
-    width: 100%;
-    height: 50px;
-    background: linear-gradient(
-        to bottom,
-        transparent,
-        rgba(0,255,100,.22),
-        transparent
-    );
 }
 
 .scan-laser.active {
@@ -378,11 +375,12 @@ html, body {
     letter-spacing: 2px;
     margin-top: 14px;
     text-align: center;
+    pointer-events: none;
 }
 
-/* =================================
+/* =====================================
    BOTTOM HUD
-================================= */
+===================================== */
 
 .hud-bottom {
     position: absolute;
@@ -394,6 +392,7 @@ html, body {
     align-items: center;
     gap: 24px;
     z-index: 4;
+    pointer-events: none;
 }
 
 .hud-globe {
@@ -503,13 +502,9 @@ html, body {
     flex-shrink: 0;
 }
 
-.hud-data div:nth-child(even) {
-    color: #b5ff00;
-}
-
-/* =================================
+/* =====================================
    PROGRESS BAR
-================================= */
+===================================== */
 
 .hud-progress {
     position: absolute;
@@ -520,6 +515,7 @@ html, body {
     align-items: center;
     gap: 12px;
     z-index: 8;
+    pointer-events: none;
 }
 
 .progress-track {
@@ -542,9 +538,9 @@ html, body {
     font-size: 10px;
 }
 
-/* =================================
-   FULLSCREEN VIDEO
-================================= */
+/* =====================================
+   VIDEO SCREEN
+===================================== */
 
 #videoScreen {
     position: absolute;
@@ -563,43 +559,16 @@ html, body {
 }
 
 #launchVideo {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: contain;
     background: #000;
 }
 
-/* VIDEO PLAYBACK FALLBACK */
-
-#videoPlayFallback {
-    position: absolute;
-    inset: 0;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 20px;
-    background: rgba(0,0,0,.9);
-    color: #aaffc4;
-    font-family: 'Orbitron', sans-serif;
-    letter-spacing: 4px;
-    z-index: 101;
-}
-
-#videoPlayFallback button {
-    padding: 15px 35px;
-    color: #020b07;
-    background: #00ff80;
-    border: none;
-    font-family: 'Orbitron', sans-serif;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 0 20px #00ff80;
-}
-
-/* =================================
-   TRANSITION FLASH
-================================= */
+/* =====================================
+   FLASH TRANSITION
+===================================== */
 
 #flash {
     position: absolute;
@@ -620,16 +589,12 @@ html, body {
     100% { opacity: 0; }
 }
 
-/* =================================
+/* =====================================
    RESPONSIVE
-================================= */
+===================================== */
 
 @media (max-width: 700px) {
-
     .scanner-area {
-        left: 50%;
-        right: auto;
-        transform: translateX(-50%);
         width: 65%;
         top: 19%;
         height: 54%;
@@ -664,7 +629,6 @@ html, body {
 }
 
 @media (max-height: 600px) {
-
     .hud-bottom {
         transform: scale(.75);
         transform-origin: bottom left;
@@ -687,15 +651,12 @@ html, body {
 
 <div id="presentation">
 
-    <!-- =================================
-         SCANNER SCREEN
-    ================================== -->
+    <!-- SCANNER SCREEN -->
 
     <section id="scannerScreen">
 
         <div class="grid-background"></div>
         <div class="background-glow"></div>
-
         <div class="particle-layer" id="particles"></div>
 
         <!-- TOP HUD -->
@@ -719,7 +680,7 @@ html, body {
 
         </div>
 
-        <!-- CENTER SCANNER -->
+        <!-- SCANNER -->
 
         <div class="scanner-area">
 
@@ -794,7 +755,7 @@ html, body {
 
         </div>
 
-        <!-- PROGRESS BAR -->
+        <!-- PROGRESS -->
 
         <div class="hud-progress">
 
@@ -809,15 +770,14 @@ html, body {
     </section>
 
 
-    <!-- =================================
-         VIDEO SCREEN
-         All scenes after scanner are in MP4
-    ================================== -->
+    <!-- VIDEO SCREEN -->
 
     <div id="videoScreen">
 
         <video id="launchVideo"
+               controls
                playsinline
+               webkit-playsinline
                preload="auto">
 
             <source src="video/gimikk.mp4" type="video/mp4">
@@ -826,8 +786,7 @@ html, body {
 
         </video>
 
-
-    <!-- TRANSITION FLASH -->
+    </div>
 
     <div id="flash"></div>
 
@@ -836,198 +795,194 @@ html, body {
 
 <script>
 
-/* =================================
+/* =====================================
    SETTINGS
-================================= */
+===================================== */
 
-const SCAN_DURATION = 10000;
-// Scanner duration: 10 seconds
+const SCAN_DURATION = 10000; // 10 seconds
 
 
-/* =================================
+/* =====================================
    ELEMENTS
-================================= */
+===================================== */
 
-const scannerScreen =
-    document.getElementById("scannerScreen");
+const scannerScreen = document.getElementById("scannerScreen");
+const scannerFrame = document.getElementById("scannerFrame");
+const videoScreen = document.getElementById("videoScreen");
+const launchVideo = document.getElementById("launchVideo");
 
-const videoScreen =
-    document.getElementById("videoScreen");
+const laser = document.getElementById("scanLaser");
+const statusText = document.getElementById("scannerStatus");
+const progressFill = document.getElementById("progressFill");
+const percentage = document.getElementById("percentage");
 
-const launchVideo =
-    document.getElementById("launchVideo");
+const meterOne = document.getElementById("meterOne");
+const meterTwo = document.getElementById("meterTwo");
 
-const laser =
-    document.getElementById("scanLaser");
-
-const statusText =
-    document.getElementById("scannerStatus");
-
-const progressFill =
-    document.getElementById("progressFill");
-
-const percentage =
-    document.getElementById("percentage");
-
-const meterOne =
-    document.getElementById("meterOne");
-
-const meterTwo =
-    document.getElementById("meterTwo");
-
-const flash =
-    document.getElementById("flash");
+const flash = document.getElementById("flash");
 
 
-/* =================================
+/* =====================================
    LIVE DATE
-================================= */
+===================================== */
 
 function updateLiveDate() {
 
     const now = new Date();
 
-    const day = now.toLocaleDateString("en-GB", {
-        weekday: "long"
-    });
-
-    const date = now.toLocaleDateString("en-GB", {
-        day: "2-digit"
-    });
-
-    const month = now.toLocaleDateString("en-GB", {
-        month: "long"
-    });
-
     document.getElementById("dateDay").textContent =
-        day.toUpperCase();
+        now.toLocaleDateString("en-GB", {
+            weekday: "long"
+        }).toUpperCase();
 
     document.getElementById("dateNumber").textContent =
-        date;
+        now.toLocaleDateString("en-GB", {
+            day: "2-digit"
+        });
 
     document.getElementById("dateMonth").textContent =
-        month.toUpperCase();
+        now.toLocaleDateString("en-GB", {
+            month: "long"
+        }).toUpperCase();
 }
 
 updateLiveDate();
-
 setInterval(updateLiveDate, 60000);
 
 
-/* =================================
-   PARTICLE GENERATOR
-================================= */
+/* =====================================
+   DIGITAL CLOCK
+===================================== */
 
-function createParticles(containerId, amount = 60) {
+function updateClock() {
 
-    const container =
-        document.getElementById(containerId);
+    document.getElementById("hudClock").textContent =
+        new Date().toLocaleTimeString("en-GB");
+}
 
-    if (!container) return;
+updateClock();
+setInterval(updateClock, 1000);
 
-    for (let i = 0; i < amount; i++) {
+
+/* =====================================
+   PARTICLES
+===================================== */
+
+function createParticles() {
+
+    const container = document.getElementById("particles");
+
+    for (let i = 0; i < 60; i++) {
 
         const particle = document.createElement("div");
 
         particle.className = "particle";
 
-        particle.style.left =
-            Math.random() * 100 + "%";
-
-        particle.style.top =
-            Math.random() * 100 + "%";
+        particle.style.left = Math.random() * 100 + "%";
+        particle.style.top = Math.random() * 100 + "%";
 
         particle.style.animationDuration =
             (5 + Math.random() * 9) + "s";
 
         particle.style.animationDelay =
-            (Math.random() * 8) + "s";
+            Math.random() * 8 + "s";
 
         container.appendChild(particle);
     }
 }
 
-createParticles("particles", 60);
+createParticles();
 
 
-/* =================================
-   WAVE BAR GENERATOR
-================================= */
+/* =====================================
+   WAVE BARS
+===================================== */
 
-const waveBars =
-    document.getElementById("waveBars");
+const waveBars = document.getElementById("waveBars");
 
 for (let i = 0; i < 40; i++) {
 
     const bar = document.createElement("span");
 
-    bar.style.animationDelay =
-        Math.random() + "s";
+    bar.style.animationDelay = Math.random() + "s";
 
     waveBars.appendChild(bar);
 }
 
 
-/* =================================
-   DIGITAL CLOCK
-================================= */
-
-function updateClock() {
-
-    const now = new Date();
-
-    document.getElementById("hudClock").textContent =
-        now.toLocaleTimeString("en-GB");
-}
-
-updateClock();
-
-setInterval(updateClock, 1000);
-
-
-/* =================================
-   FLASH TRANSITION
-================================= */
-
-function transitionFlash() {
-
-    flash.classList.remove("active");
-
-    void flash.offsetWidth;
-
-    flash.classList.add("active");
-}
-
-
-/* =================================
-   START SCANNING
-================================= */
+/* =====================================
+   SCAN CONTROL
+===================================== */
 
 let scanStarted = false;
+let scanCompleted = false;
 
 function startHandScan() {
 
-    if (scanStarted) return;
+    if (scanStarted || scanCompleted) return;
 
     scanStarted = true;
 
-    const scannerFrame = document.getElementById("scannerFrame");
     scannerFrame.classList.add("scanning");
 
     statusText.textContent = "TOUCH DETECTED";
 
-    // Scanning starts immediately when the screen is touched.
     setTimeout(() => {
+
         statusText.textContent = "BIOMETRIC SCANNING";
+
         laser.classList.add("active");
+
         runProgress();
+
     }, 350);
 }
 
 
-/* =================================
+/* =====================================
+   TOUCH DETECTION
+   iPad Safari + other browsers
+===================================== */
+
+// Main touch detection for iPad Safari
+scannerFrame.addEventListener("touchstart", function(event) {
+
+    if (scanStarted) return;
+
+    if (event.cancelable) {
+        event.preventDefault();
+    }
+
+    startHandScan();
+
+}, { passive: false });
+
+// Pointer support for newer browsers
+scannerFrame.addEventListener("pointerdown", function(event) {
+
+    if (scanStarted) return;
+
+    if (event.cancelable) {
+        event.preventDefault();
+    }
+
+    startHandScan();
+
+}, { passive: false });
+
+// Click fallback for mouse and browsers without touch events
+scannerFrame.addEventListener("click", function() {
+
+    if (scanStarted) return;
+
+    startHandScan();
+
+});
+
+
+/* =====================================
    PROGRESS 0% TO 100%
-================================= */
+===================================== */
 
 function runProgress() {
 
@@ -1069,27 +1024,40 @@ function runProgress() {
 }
 
 
-/* =================================
-   SCAN COMPLETE -> PLAY VIDEO
-================================= */
+/* =====================================
+   FLASH TRANSITION
+===================================== */
+
+function transitionFlash() {
+
+    flash.classList.remove("active");
+
+    void flash.offsetWidth;
+
+    flash.classList.add("active");
+}
+
+
+/* =====================================
+   SCAN COMPLETE
+===================================== */
 
 function completeHandScan() {
 
+    if (scanCompleted) return;
+
+    scanCompleted = true;
+
     laser.classList.remove("active");
 
-    statusText.textContent =
-        "AUTHENTICATION COMPLETE";
+    statusText.textContent = "AUTHENTICATION COMPLETE";
 
     percentage.textContent = "100%";
 
     progressFill.style.width = "100%";
 
     meterOne.textContent = "100";
-
     meterTwo.textContent = "100";
-
-
-    // Hold completed scanner briefly
 
     setTimeout(() => {
 
@@ -1097,135 +1065,62 @@ function completeHandScan() {
 
         setTimeout(() => {
 
-            // Hide scanner screen
-
             scannerScreen.style.display = "none";
-
-            // Show video screen
 
             videoScreen.classList.add("active");
 
-            // Reset video to the beginning
-
             launchVideo.currentTime = 0;
-
-            // Play video
 
             playLaunchVideo();
 
         }, 400);
 
-    }, 1200);
+    }, 1000);
 }
 
 
-/* =================================
-   PLAY VIDEO
-================================= */
+/* =====================================
+   PLAY VIDEO WITH ORIGINAL AUDIO
+===================================== */
 
 function playLaunchVideo() {
 
-    const fallback =
-        document.getElementById("videoPlayFallback");
-
+    // Keep original video sound
     launchVideo.muted = false;
+    launchVideo.volume = 1;
 
-    launchVideo.play()
-        .then(() => {
+    // Try automatic playback
+    const playPromise = launchVideo.play();
 
-            // Video successfully started
+    if (playPromise !== undefined) {
 
-            fallback.style.display = "none";
+        playPromise.then(() => {
 
-        })
-        .catch((error) => {
+            console.log("Video started successfully.");
 
-            // Browser may block autoplay with sound
+        }).catch((error) => {
 
-            console.log(
-                "Autoplay blocked. Manual playback required.",
-                error
-            );
+            console.log("Safari blocked autoplay with sound:", error);
 
-            fallback.style.display = "flex";
+            // Keep native video controls visible.
+            // User can press Play if Safari blocks autoplay.
 
         });
+    }
 }
 
 
-/* =================================
-   MANUAL VIDEO PLAY BUTTON
-================================= */
-
-document.getElementById("playVideoButton")
-    .addEventListener("click", function() {
-
-        const fallback =
-            document.getElementById("videoPlayFallback");
-
-        launchVideo.play()
-            .then(() => {
-
-                fallback.style.display = "none";
-
-            })
-            .catch(error => {
-
-                console.error("Video playback error:", error);
-
-            });
-
-    });
-
-
-/* =================================
-   VIDEO ERROR HANDLING
-================================= */
+/* =====================================
+   VIDEO ERROR
+===================================== */
 
 launchVideo.addEventListener("error", function() {
 
-    const fallback =
-        document.getElementById("videoPlayFallback");
-
-    fallback.style.display = "flex";
-
-    fallback.innerHTML = `
-        <div>VIDEO FILE NOT FOUND</div>
-        <div style="font-size:11px;letter-spacing:2px">
-            CHECK video/gimikk.mp4
-        </div>
-    `;
+    console.error(
+        "Video could not be loaded. Check video/gimikk.mp4"
+    );
 
 });
-
-
-/* =================================
-   TOUCH DETECTION
-================================= */
-
-const presentation = document.getElementById("presentation");
-const scannerFrame = document.getElementById("scannerFrame");
-
-scannerFrame.addEventListener("pointerdown", function(event) {
-
-    if (scanStarted) return;
-
-    // Prevent the browser from treating the touch as a scroll/zoom gesture.
-    if (event.cancelable) event.preventDefault();
-
-    // Request fullscreen directly during the user's touch gesture.
-    // This is more reliable than requesting it after the scan finishes.
-    if (!document.fullscreenElement && presentation.requestFullscreen) {
-        presentation.requestFullscreen().catch(() => {
-            console.log("Fullscreen request was blocked by the browser.");
-        });
-    } else if (!document.fullscreenElement && presentation.webkitRequestFullscreen) {
-        presentation.webkitRequestFullscreen();
-    }
-
-    startHandScan();
-
-}, { passive: false });
 
 </script>
 
